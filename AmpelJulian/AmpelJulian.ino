@@ -9,9 +9,9 @@
 namespace pin 
 {
     int trig_R = A0;
-    int trig_Y = 15;
-    int trig_G = 16;
-    int trig_4 = 17;
+    int trig_Y = A1;
+    int trig_G = A2;
+    int trig_4 = A3;
 
     int but_R_sig = 12;
     int but_G_sig = 9;
@@ -25,17 +25,17 @@ namespace pin
     int but_Y_led = 5;
     int but_W_led = 3;
 
-    int ir_sig = 19;
+    int ir_sig = A5;
 }
 
 // the setup function runs once when you press reset or power the board
 void setup() {
 
     //IO Setup
-    digitalWrite(pin::trig_R, LOW);
-    digitalWrite(pin::trig_Y, LOW);
-    digitalWrite(pin::trig_G, LOW);
-    digitalWrite(pin::trig_4, LOW);
+    digitalWrite(pin::trig_R, HIGH);
+    digitalWrite(pin::trig_Y, HIGH);
+    digitalWrite(pin::trig_G, HIGH);
+    digitalWrite(pin::trig_4, HIGH);
 
     digitalWrite(pin::but_R_led, LOW);
     digitalWrite(pin::but_G_led, LOW);
@@ -73,23 +73,65 @@ void setup() {
     digitalWrite(pin::but_Y_led, LOW);
     digitalWrite(pin::but_W_led, LOW);
 
+    digitalWrite(pin::trig_R, LOW);
+    digitalWrite(pin::trig_Y, LOW);
+    digitalWrite(pin::trig_G, LOW);
+    digitalWrite(pin::trig_4, LOW);  
+    delay(1000);
     digitalWrite(pin::trig_R, HIGH);
     digitalWrite(pin::trig_Y, HIGH);
     digitalWrite(pin::trig_G, HIGH);
     digitalWrite(pin::trig_4, HIGH);
-    delay(1000);
-    digitalWrite(pin::trig_R, LOW);
-    digitalWrite(pin::trig_Y, LOW);
-    digitalWrite(pin::trig_G, LOW);
-    digitalWrite(pin::trig_4, LOW);
 
+
+    //Testmode
+    if (!digitalRead(pin::but_B_sig))
+    {
+        while (1)
+        {
+            if (!digitalRead(pin::but_R_sig))
+            {
+                digitalWrite(pin::trig_R, LOW); digitalWrite(pin::but_R_led, HIGH);
+            }
+            else { digitalWrite(pin::trig_R, HIGH); digitalWrite(pin::but_R_led, LOW); }
+
+            if (!digitalRead(pin::but_Y_sig))
+            {
+                digitalWrite(pin::trig_Y, LOW); digitalWrite(pin::but_Y_led, HIGH);
+            }
+            else { digitalWrite(pin::trig_Y, HIGH); digitalWrite(pin::but_Y_led, LOW); }
+
+            if (!digitalRead(pin::but_G_sig))
+            {
+                digitalWrite(pin::trig_G, LOW); digitalWrite(pin::but_G_led, HIGH);
+            }
+            else { digitalWrite(pin::trig_G, HIGH); digitalWrite(pin::but_G_led, LOW); }
+
+            if (!digitalRead(pin::but_W_sig))
+            {
+                digitalWrite(pin::trig_4, LOW); digitalWrite(pin::but_W_led, HIGH);
+            }
+            else { digitalWrite(pin::trig_4, HIGH); digitalWrite(pin::but_W_led, LOW); }
+
+            if (!digitalRead(pin::but_B_sig))
+            {
+                digitalWrite(pin::but_B_led, HIGH);
+                digitalWrite(pin::trig_R, LOW); digitalWrite(pin::trig_4, LOW);
+                digitalWrite(pin::trig_Y, LOW); digitalWrite(pin::trig_G, LOW);
+            }
+            else
+            {
+                digitalWrite(pin::but_B_led, LOW);
+                digitalWrite(pin::trig_R, HIGH); digitalWrite(pin::trig_4, HIGH);
+                digitalWrite(pin::trig_Y, HIGH); digitalWrite(pin::trig_G, HIGH);
+
+            }
+        }
+    }
 
 }
 
 // the loop function runs over and over again until power down or reset
 void loop() {
   
-    if (!digitalRead(pin::but_R_sig))
-    {digitalWrite(pin::trig_R, LOW); digitalWrite(pin::but_R_led, HIGH);}
-    else { digitalWrite(pin::trig_R, HIGH); digitalWrite(pin::but_R_led, LOW); }
 }
