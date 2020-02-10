@@ -28,6 +28,27 @@ namespace pin
     int ir_sig = A5;
 }
 
+// Classes
+
+class buttons
+{
+public:
+    int R_sig;
+    int G_sig;
+    int B_sig;
+    int Y_sig;
+    int W_sig;
+
+    int R_led;
+    int G_led;
+    int B_led;
+    int Y_led;
+    int W_led;
+
+private:
+    int
+};
+
 // the setup function runs once when you press reset or power the board
 void setup() {
 
@@ -130,6 +151,8 @@ void setup() {
     digitalWrite(pin::trig_G, HIGH);
     digitalWrite(pin::trig_4, HIGH);
 }
+
+
 
 // the loop function runs over and over again until power down or reset
 void loop() 
