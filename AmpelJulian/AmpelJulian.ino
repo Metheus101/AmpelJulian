@@ -4,6 +4,21 @@
  Author:	admin
 */
 
+//Variables
+
+//times in 100ms
+int time_default_RY = 100;//10s R
+int time_default_YG = 130;//3s Y
+int time_default_GY = 230;//10s G
+int time_default_YR = 30;//3s Y
+
+int time_R_RY = 30;//3s R
+int time_R_YG = 40;//1s Y
+int time_R_GY = 70;//3s G
+int time_R_YR = 80;//1s Y
+
+int time_Y_random = 30;//3s
+
 //Pindef
 namespace pin
 {
@@ -205,6 +220,160 @@ void set_off()
 	digitalWrite(pin::trig_4, HIGH);
 }
 
+//Mode Blue (Automatic Mode)
+void mode_blue()
+{
+	digitalWrite(pin::but_R_led, LOW);
+	digitalWrite(pin::but_G_led, LOW);
+	digitalWrite(pin::but_B_led, HIGH);
+	digitalWrite(pin::but_Y_led, LOW);
+	digitalWrite(pin::but_W_led, LOW);
+	digitalWrite(pin::trig_R, HIGH);
+	digitalWrite(pin::trig_Y, HIGH);
+	digitalWrite(pin::trig_G, HIGH);
+	digitalWrite(pin::trig_4, HIGH);
+	//wait for Release of Button blue
+	while (!digitalRead(pin::but_B_sig))
+	{
+		delay(10);
+	}
+	delay(100);
+
+	//Loop till White is pressed
+	while (!digitalRead(pin::but_W_sig))
+	{
+		static int count = 0;
+		static int mode = 0;//Mode 0: Default
+
+		//setmode...
+		//(use Buttons R G Y B  to switch modes; B=default)
+		if (!digitalRead(pin::but_B_sig))
+		{
+			mode = 0;
+			count = 0;
+		}
+		if (!digitalRead(pin::but_R_sig))
+		{
+			mode = 1;
+			count = 0;
+		}
+		if (!digitalRead(pin::but_Y_sig))
+		{
+			mode = 2;
+			count = 0;
+		}
+
+		//Mode 0:
+		if (mode == 0)
+		{
+			if (count = 0)
+			{
+				digitalWrite(pin::trig_Y, HIGH);
+				digitalWrite(pin::trig_R, LOW);
+				digitalWrite(pin::trig_4, LOW);
+				count++;
+			}
+
+			if (count == time_default_RY);
+			{
+				digitalWrite(pin::trig_R, HIGH);
+				digitalWrite(pin::trig_Y, LOW);
+				count++;
+			}
+
+			if (count == time_default_YG);
+			{
+				digitalWrite(pin::trig_Y, HIGH);
+				digitalWrite(pin::trig_G, LOW);
+				count++;
+			}
+			if (count == time_default_YR - 1);
+			{
+				count = 0;
+			}
+		}
+
+		//Mode 1:
+		if (mode == 1)
+		{
+			if (count = 0)
+			{
+				digitalWrite(pin::trig_Y, HIGH);
+				digitalWrite(pin::trig_R, LOW);
+				digitalWrite(pin::trig_4, LOW);
+				count++;
+			}
+
+			if (count == time_R_RY);
+			{
+				digitalWrite(pin::trig_R, HIGH);
+				digitalWrite(pin::trig_Y, LOW);
+				count++;
+			}
+
+			if (count == time_R_YG);
+			{
+				digitalWrite(pin::trig_Y, HIGH);
+				digitalWrite(pin::trig_G, LOW);
+				count++;
+			}
+			if (count == time_R_YR - 1);
+			{
+				count = 0;
+			}
+		}
+
+		//Mode 2 Y Random
+		if (mode == 2)
+		{
+			static long lastlight = 4;
+			static long randomlight;
+
+			if (count == time_Y_random)
+			{
+				count = 0;
+			}
+			if (count == 0);
+			{
+				randomlight = random(3);
+				while (randomlight == lastlight)
+				{
+					randomlight = random(3);
+				}
+				lastlight = randomlight;
+
+				if (randomlight == 0)
+				{
+					digitalWrite(pin::trig_R, LOW);
+					digitalWrite(pin::trig_Y, HIGH);
+					digitalWrite(pin::trig_G, HIGH);
+					digitalWrite(pin::trig_4, LOW);
+				}
+				if (randomlight == 1)
+				{
+					digitalWrite(pin::trig_R, HIGH);
+					digitalWrite(pin::trig_Y, LOW);
+					digitalWrite(pin::trig_G, HIGH);
+					digitalWrite(pin::trig_4, LOW);
+				}
+				if (randomlight == 2)
+				{
+					digitalWrite(pin::trig_R, HIGH);
+					digitalWrite(pin::trig_Y, HIGH);
+					digitalWrite(pin::trig_G, LOW);
+					digitalWrite(pin::trig_4, LOW);
+				}
+			}
+			count++;
+		}
+
+		delay(100);
+	}
+
+	set_off();
+	delay(100);
+}
+
 // the loop function runs over and over again until power down or reset
 void loop()
 {
@@ -239,12 +408,18 @@ void loop()
 	}
 
 	//Button White pressed
-	if (!digitalRead(pin::but_G_sig))
+	if (!digitalRead(pin::but_W_sig))
 	{
-		set_red();
-		while (!digitalRead(pin::but_G_sig))
+		set_off();
+		while (!digitalRead(pin::but_W_sig))
 		{
 			delay(10);
 		}
+	}
+
+	//Button Blue pressed
+	if (!digitalRead(pin::but_B_sig))
+	{
+		mode_blue();
 	}
 }
