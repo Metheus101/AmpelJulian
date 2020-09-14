@@ -422,4 +422,5 @@ void loop()
 	{
 		mode_blue();
 	}
+	delay(10);
 }
