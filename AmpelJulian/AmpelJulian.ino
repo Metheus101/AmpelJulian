@@ -191,6 +191,20 @@ void set_green()
 	digitalWrite(pin::trig_4, LOW);
 }
 
+// Set Off
+void set_off()
+{
+	digitalWrite(pin::but_R_led, LOW);
+	digitalWrite(pin::but_G_led, LOW);
+	digitalWrite(pin::but_B_led, LOW);
+	digitalWrite(pin::but_Y_led, LOW);
+	digitalWrite(pin::but_W_led, HIGH);
+	digitalWrite(pin::trig_R, HIGH);
+	digitalWrite(pin::trig_Y, HIGH);
+	digitalWrite(pin::trig_G, HIGH);
+	digitalWrite(pin::trig_4, HIGH);
+}
+
 // the loop function runs over and over again until power down or reset
 void loop()
 {
@@ -215,6 +229,16 @@ void loop()
 	}
 
 	//Button Green pressed
+	if (!digitalRead(pin::but_G_sig))
+	{
+		set_red();
+		while (!digitalRead(pin::but_G_sig))
+		{
+			delay(10);
+		}
+	}
+
+	//Button White pressed
 	if (!digitalRead(pin::but_G_sig))
 	{
 		set_red();
