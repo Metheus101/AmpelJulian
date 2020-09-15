@@ -17,7 +17,11 @@ int time_R_YG = 40;//1s Y
 int time_R_GY = 70;//3s G
 int time_R_YR = 80;//1s Y
 
-int time_Y_random = 30;//3s
+int time_Y_random = 300;//3s
+
+
+int counttime = 0;
+int mode = 0;//Mode 0: Default
 
 //Pindef
 namespace pin
@@ -187,7 +191,7 @@ void set_yellow()
 	digitalWrite(pin::but_Y_led, HIGH);
 	digitalWrite(pin::but_W_led, LOW);
 	digitalWrite(pin::trig_R, HIGH);
-	digitalWrite(pin::trig_Y, HIGH);
+	digitalWrite(pin::trig_Y, LOW);
 	digitalWrite(pin::trig_G, HIGH);
 	digitalWrite(pin::trig_4, LOW);
 }
@@ -240,86 +244,86 @@ void mode_blue()
 	delay(100);
 
 	//Loop till White is pressed
-	while (!digitalRead(pin::but_W_sig))
+	while (digitalRead(pin::but_W_sig))
 	{
-		static int count = 0;
-		static int mode = 0;//Mode 0: Default
+		
 
 		//setmode...
 		//(use Buttons R G Y B  to switch modes; B=default)
 		if (!digitalRead(pin::but_B_sig))
 		{
 			mode = 0;
-			count = 0;
+			counttime = 0;
 		}
 		if (!digitalRead(pin::but_R_sig))
 		{
 			mode = 1;
-			count = 0;
+			counttime = 0;
 		}
 		if (!digitalRead(pin::but_Y_sig))
 		{
 			mode = 2;
-			count = 0;
+			counttime = 0;
 		}
 
 		//Mode 0:
 		if (mode == 0)
 		{
-			if (count = 0)
+			if (counttime == 0)
 			{
 				digitalWrite(pin::trig_Y, HIGH);
 				digitalWrite(pin::trig_R, LOW);
 				digitalWrite(pin::trig_4, LOW);
-				count++;
+				counttime++;
 			}
 
-			if (count == time_default_RY);
+			if (counttime == time_default_RY);
 			{
 				digitalWrite(pin::trig_R, HIGH);
 				digitalWrite(pin::trig_Y, LOW);
-				count++;
+				counttime++;
+				delay(1000);
 			}
 
-			if (count == time_default_YG);
+			if (counttime == time_default_YG);
 			{
 				digitalWrite(pin::trig_Y, HIGH);
 				digitalWrite(pin::trig_G, LOW);
-				count++;
+				counttime++;
 			}
-			if (count == time_default_YR - 1);
+			if (counttime == time_default_YR - 1);
 			{
-				count = 0;
+				counttime = 0;
 			}
 		}
 
 		//Mode 1:
 		if (mode == 1)
 		{
-			if (count = 0)
+			if (counttime == 0)
 			{
 				digitalWrite(pin::trig_Y, HIGH);
 				digitalWrite(pin::trig_R, LOW);
 				digitalWrite(pin::trig_4, LOW);
-				count++;
+				counttime++;
 			}
 
-			if (count == time_R_RY);
+			if (counttime == time_R_RY);
 			{
 				digitalWrite(pin::trig_R, HIGH);
 				digitalWrite(pin::trig_Y, LOW);
-				count++;
+				counttime++;
 			}
 
-			if (count == time_R_YG);
+			if (counttime == time_R_YG);
 			{
 				digitalWrite(pin::trig_Y, HIGH);
 				digitalWrite(pin::trig_G, LOW);
-				count++;
+				counttime++;
 			}
-			if (count == time_R_YR - 1);
+			if (counttime == time_R_YR - 1);
 			{
-				count = 0;
+				counttime = 0;
 			}
 		}
 
@@ -329,14 +333,14 @@ void mode_blue()
 			static long lastlight = 4;
 			static long randomlight;
 
-			if (count == time_Y_random)
+			if (counttime == time_Y_random)
 			{
-				count = 0;
+				counttime = 0;
 			}
-			if (count == 0);
+			if (counttime == 0);
 			{
 				randomlight = random(3);
-				while (randomlight == lastlight)
+				while (randomlight = lastlight)
 				{
 					randomlight = random(3);
 				}
@@ -364,7 +368,7 @@ void mode_blue()
 					digitalWrite(pin::trig_4, LOW);
 				}
 			}
-			count++;
+			counttime = counttime+1;
 		}
 
 		delay(100);
@@ -400,7 +404,7 @@ void loop()
 	//Button Green pressed
 	if (!digitalRead(pin::but_G_sig))
 	{
-		set_red();
+		set_green();
 		while (!digitalRead(pin::but_G_sig))
 		{
 			delay(10);
